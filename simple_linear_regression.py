@@ -112,3 +112,95 @@ Intercept:  126.28970217408721
 Here, Coefficient and Intercept are the regression parameters determined by the model.
 They define the slope and intercept of the 'best-fit' line to the training data.
 '''
+
+'''
+Visualize model outputs
+You can visualize the goodness-of-fit of the model to the training data by plotting the fitted line over the data.
+
+The regression model is the line given by y = intercept + coefficient * x.
+'''
+plt.scatter(X_train , y_train, color = 'blue')
+plt.plot(X_train , lr.coef_ * x + lr.intercept, color = 'red')
+plt.xlabel('Engine size')
+plt.ylabel('CO2_Emissions')
+plt.show()
+
+'''
+Model evaluation
+You can compare the actual values and predicted values to calculate the accuracy of a regression model. Evaluation metrics play a key role in the development of a model, as they provide insight into areas that require improvement.
+
+There are different model evaluation metrics, let's use MSE here to calculate the accuracy of our model based on the test set:
+
+Mean Absolute Error: It is the mean of the absolute value of the errors. This is the easiest of the metrics to understand since it’s just an average error.
+
+Mean Squared Error (MSE): MSE is the mean of the squared error. In fact, it's the metric used by the model to find the best fit line, and for that reason, it is also called the residual sum of squares.
+
+Root Mean Squared Error (RMSE). RMSE simply transforms the MSE into the same units as the variables being compared, which can make it easier to interpret.
+
+R2-Score is not an error but rather a popular metric used to estimate the performance of your regression model. It represents how close the data points are to the fitted regression line. The higher the R2-Score value, the better the model fits your data. The best possible score is 1.0 and it can be negative (because the model can be arbitrarily worse).
+'''
+
+from sklearn.metrics import mean_absolute_error, mean_squared_error, r2_score
+
+# Use the predict method to make test predictions
+y_pred = lr.predict(X_test.reshape(-1,1))
+
+# Evaluation
+print("Mean absolute error: %.2f" % mean_absolute_error(y_test, y_pred))
+print("Mean squared error: %.2f" % mean_squared_error(y_test, y_pred))
+print("Root mean squared error: %.2f" % np.sqrt(mean_squared_error(y_test, y_pred)))
+print("R2-score: %.2f" % r2_score(y_test, y_pred))
+
+'''
+Mean absolute error: 24.10
+Mean squared error: 985.94
+Root mean squared error: 31.40
+R2-score: 0.76
+'''
+
+'''
+Practice exercises
+1. Plot the regression model result over the test data instead of the training data. Visually evaluate whether the result is good.
+'''
+plt.scatter(X_test, y_test, color = 'blue')
+plt.plot( X_test, lr.coef_ * X_test + lr.intercept_, color = 'red')
+plt.xlabel("Engine size")
+plt.ylabel("C02_emmisions")
+plt.show()
+'''
+2. Select the fuel consumption feature from the dataframe and split the data 80%/20% into training and testing sets.
+Use the same random state as previously so you can make an objective comparison to the previous training result.
+'''
+X = c_df.FUELCONSUMPTION_COMB.to_numpy()
+
+X_train, X_test, y_train, y_test = train_test_split(X , y , test_size= 0.20 , random_state=1)
+
+'''
+3. Train a linear regression model using the training data you created.
+Remember to transform your 1D feature into a 2D array.
+'''
+lr = LinearRegression()
+lr.fit(X_train.reshape(-1,1), y_train)
+
+'''
+4. Use the model to make test predictions on the fuel consumption testing data.¶
+'''
+y_pred= regr.predict(X_test.reshape(-1,1))
+
+'''
+5. Calculate and print the Mean Squared Error of the test predictions.
+'''
+# Evaluation
+print("Mean absolute error: %.2f" % mean_absolute_error(y_test, y_pred))
+print("Mean squared error: %.2f" % mean_squared_error(y_test, y_pred))
+print("Root mean squared error: %.2f" % np.sqrt(mean_squared_error(y_test, y_pred)))
+print("R2-score: %.2f" % r2_score(y_test, y_pred))
+'''
+Mean absolute error: 20.50
+Mean squared error: 857.80
+Root mean squared error: 29.29
+R2-score: 0.79
+
+As you might expect from your exploratory analysis, the MSE is smaller when we train using FUELCONSUMPTION_COMB(857.80) rather than ENGINESIZE(985.94).
+
+'''
